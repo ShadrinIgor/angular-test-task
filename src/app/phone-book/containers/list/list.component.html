@@ -1,0 +1,75 @@
+<div>
+  <h1>Phone book</h1>
+
+  <div class="form-group">
+    <input type="text" [formControl]="searchControl" class="form-control" placeholder="Search">
+  </div>
+
+  <div class="row">
+    <div class="col-6">
+      <div class="form-group">
+        <input type="checkbox" id="selectedUsers" [formControl]="selectedUsersControl" class="form-check-input ml-0">
+        <label class="form-check-label ml-4" for="selectedUsers">Только выделенные пользователи</label>
+      </div>
+    </div>
+    <div class="col-6 text-right">
+      <div class="form-group">
+        <button type="button" class="btn btn-success" (click)="goToForm()">Создать новый</button>
+      </div>
+    </div>
+  </div>
+
+  <table class="table table-hover">
+    <thead class="thead-dark">
+    <tr>
+      <th scope="col">ФИО</th>
+      <th scope="col">Телефон</th>
+      <th scope="col">Дата добавления</th>
+      <th scope="col">Комментарий</th>
+      <th scope="col">Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of users; trackBy: truckUser" [ngClass]="{'bg-info text-white': user.selected}">
+      <td>{{user.fio}}</td>
+      <td>{{user.phone}}</td>
+      <td>{{user.addDate}}</td>
+      <td>{{user.comment}}</td>
+      <td class="text-right">
+        <button type="button" class="btn btn-success btn-sm mr-1" (click)="goToForm(user.id)">Ред.</button>
+        <button
+          type="button"
+          class="btn btn-danger btn-sm"
+          data-toggle="modal"
+          data-target="#exampleModalCenter"
+          (click)="showDeleteModal(user.id)"
+        >Удалить</button>
+      </td>
+    </tr>
+    <tr *ngIf="!users.length">
+      <td colspan="4" class="text-center">Список пуст</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+          <button type="button" class="btn btn-danger" (click)="delete()">Удалить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -28,9 +28,14 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/assets/css/bootstrap.css",
+              "src/assets/css/bootstrap-grid.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/bootstrap.min.js",
+              "src/assets/js/bootstrap.bundle.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -123,6 +128,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "app-test"
+    }
+  },
+  "defaultProject": "app-test",
+  "cli": {
+    "analytics": "17e43697-deb6-4778-ad13-9aa559334b87"
+  }
 }
