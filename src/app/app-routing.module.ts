@@ -4,6 +4,7 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 
 const routes: Route[] = [
   { path: '', loadChildren: () => import('./phone-book/phone-book.module').then(m => m.PhoneBookModule) },
+  { path: 'track-record', loadChildren: () => import('./track-record/track-record.module').then(m => m.TrackRecordModule) },
   {
     path: 'not-found',
     component: NotFoundComponent

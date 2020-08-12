@@ -1,0 +1,135 @@
+h1, div, p, label, input, button, a {
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+}
+
+.header {
+  padding: 34px 0 21px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 37px;
+
+  a {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    color: #222222;
+  }
+}
+
+h1 {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+  color: #000000;
+  margin-bottom: 16px;
+}
+
+.sub-title {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  color: #222222;
+}
+
+.form-blocks {
+
+  .block {
+    margin-top: 28px;
+
+    .bock-number {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 18px;
+      text-align: right;
+      color: #939BA3;
+      margin-right: 20px;
+      margin-top: 3px;
+    }
+
+    .block-info {
+
+      label {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 18px;
+        color: #000000;
+        margin-bottom: 12px;
+      }
+
+      input {
+        background: transparent;
+        border: 1px solid #CCD4E7 !important;
+        box-sizing: border-box;
+        border-radius: 8px;
+
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 18px;
+        height: 48px;
+        padding-right: 35px;
+
+        &.ng-invalid.ng-touched {
+          border: 1px solid #ff0000 !important;
+        }
+      }
+    }
+  }
+
+}
+
+.buttons {
+  margin-left: 25px;
+
+  .add-new {
+    display: flex;
+
+    div {
+      display: flex;
+      background: transparent;
+      box-shadow: 6px 6px 16px rgba(209, 205, 199, 0.5), -6px -6px 16px #ffffffb8;
+      border-radius: 8px;
+
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 18px;
+
+
+      align-items: center;
+
+      color: #222222;
+      padding: 15px 16px;
+      margin-top: 8px;
+      cursor: pointer;
+
+      &:hover {
+        box-shadow: 6px 6px 16px rgba(209, 205, 199, 0.5), -6px -6px 16px #ffffff;
+      }
+
+      img {
+        padding-right: 16px;
+      }
+    }
+  }
+
+  button {
+    margin-top: 48px;
+    width: 244px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 48px;
+  }
+}
+
+.input-icon {
+  bottom: 0;
+  position: absolute;
+  right: 26px;
+  cursor: pointer;
+  height: 48px;
+  display: flex;
+}

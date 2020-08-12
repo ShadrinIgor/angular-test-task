@@ -1,21 +1,27 @@
 import { Injectable } from '@angular/core';
+import { Observable, of, Subject } from 'rxjs';
+
+export interface LoadContactsParams {
+  query?: string;
+  onlySelected?: boolean;
+}
 
 export interface User {
-  id?: number;
   fio: string;
   phone: string;
   addDate: string;
-  selected?: boolean;
+  id?: number;
   comment?: string;
+  selected?: boolean;
 }
 
 @Injectable()
-export class PhoneBookService {
-  private allUsers: User[] = [
+export class ApiService {
+  private allContacts: User[] = [
     { id: 1, fio: 'Александр Сергеевич Пушкин', phone: '+1234567889', addDate: '2020-01-03', comment: 'Хорошо пишет', selected: true },
     { id: 2, fio: '1 Александр Сергеевич Пушкин', phone: '+1234567889', addDate: '2020-01-03', comment: 'Хорошо пишет' },
     { id: 3, fio: '2 Александр Сергеевич Пушкин', phone: '+1234567889', addDate: '2020-01-03', comment: 'Хорошо пишет' },
-    { id: 4, fio: '3Александр Сергеевич Пушкин', phone: '+1234567889', addDate: '2020-01-03', comment: 'Хорошо пишет' },
+    { id: 4, fio: '3 Александр Сергеевич Пушкин', phone: '+1234567889', addDate: '2020-01-03', comment: 'Хорошо пишет' },
     { id: 5, fio: '4 Александр Сергеевич Пушкин', phone: '+1234567889', addDate: '2020-01-03', comment: 'Хорошо пишет' },
     { id: 6, fio: '5 Александр Сергеевич Пушкин', phone: '+1234567889', addDate: '2020-01-03', comment: 'Хорошо пишет', selected: true },
     { id: 7, fio: '6 Александр Сергеевич Пушкин', phone: '+1234567889', addDate: '2020-01-03', comment: 'Хорошо пишет' },
@@ -24,41 +30,63 @@ export class PhoneBookService {
     { id: 10, fio: '9 Александр Сергеевич Пушкин', phone: '+1234567889', addDate: '2020-01-03', comment: 'Хорошо пишет', selected: true }
   ];
 
+  private listContacts$ = new Subject<User[]>();
+
   /**
    * Get List of Contacts
+   * @return Observable<User[]>
+   */
+  getContacts(): Observable<User[]> {
+    this.listContacts$.next([...this.allContacts]);
+    return this.listContacts$.asObservable();
+  }
+
+  /**
+   * Load List of Contacts
    * @return User[]
    */
-  getListContacts() {
-    return this.allUsers;
+  loadContacts(params?: LoadContactsParams): void {
+    let newContacts = [...this.allContacts];
+    if (params) {
+      if (params.query) {
+        newContacts = newContacts.filter(item => item.fio.indexOf(params.query) !== -1 || item.phone.indexOf(params.query) !== -1);
+      }
+
+      if (params.onlySelected) {
+        newContacts = newContacts.filter(item => item.selected);
+      }
+    }
+
+    this.listContacts$.next(newContacts);
   }
 
   /**
    * Get one Contact
    * @return User
    */
-  getContact(id: number) {
-    return this.allUsers.find(item => item.id === id);
+  getContact(id: number): Observable<User> {
+    return of(this.allContacts.find(item => item.id === id));
   }
 
   /**
    * Delete contact
-   * @return User
+   * @return User[]
    */
-  deleteContact(id: number) {
-    return true;
+  deleteContact(id: number): void {
+    this.allContacts = this.allContacts.filter(item => item.id !== id);
   }
 
   /**
    * Update contact
    * @return User
    */
-  updateContact(user: User) {
-    console.log('updateContact');
+  upsetContact(user: User): void {
     if (!user.id) {
-      this.allUsers.push(user);
+      user.id = this.allContacts.length ++;
+      this.allContacts.push(user);
     } else {
-      this.allUsers = this.allUsers.map(item => item.id === user.id ? user : item);
+      this.allContacts = this.allContacts.map(item => item.id === user.id ? user : item);
     }
-    return true;
+    this.listContacts$.next( this.allContacts);
   }
 }

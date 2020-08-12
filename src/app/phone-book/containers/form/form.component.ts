@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { PhoneBookService, User } from '../../../services/phone-book.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ApiService, User } from '../../../services/api.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-form',
@@ -9,56 +10,73 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FormComponent implements OnInit {
+export class FormComponent implements OnInit, OnDestroy {
   isNew: boolean;
   form: FormGroup;
-  user: User | null;
+  user: User;
   error: string;
   message: string;
+  loaded = false;
+  subs = new Subscription();
 
-  constructor(private phoneBookService: PhoneBookService,
+  constructor(private apiService: ApiService,
               private route: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              private cd: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
-    this.user = this.getContact();
-    this.isNew = false;
-    this.form = new FormGroup({
-      fio: new FormControl(this.user?.fio, [Validators.required]),
-      phone: new FormControl(this.user?.phone, [Validators.required, Validators.pattern(/^([+0-9])*$/)]),
-      addDate: new FormControl(this.user?.addDate),
-      comment: new FormControl(this.user?.comment),
-      selected: new FormControl(this.user?.selected)
-    });
+    this.getContact();
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 
   /**
    * Get contact
    * @return User | null
    */
-  getContact() {
+  getContact(): void {
     const id = +this.route.snapshot.params?.id;
-    if (id) {
-      return this.phoneBookService.getContact(id);
-    }
+    const sub = this.apiService.getContact(id)
+      .subscribe((user: User) => {
+        this.isNew = !!(user && user.id);
 
-    return null;
+        this.initForm(user);
+        this.loaded = true;
+        this.cd.markForCheck();
+      });
+
+    this.subs.add(sub);
+  }
+
+  /**
+   * Init Form
+   * @param user User
+   */
+  initForm(user): void {
+    this.form = new FormGroup({
+      fio: new FormControl(user?.fio, [Validators.required]),
+      phone: new FormControl(user?.phone, [Validators.required, Validators.pattern(/^([+0-9])*$/)]),
+      addDate: new FormControl(user?.addDate),
+      comment: new FormControl(user?.comment),
+      selected: new FormControl(user?.selected)
+    });
   }
 
   /**
    * Submit form
    */
-  submit() {
+  submit(): void {
     if (this.form.valid) {
 
-      if (!this.user || !this.user?.id) {
-        const date  = new Date();
+      if (this.isNew) {
+        const date = new Date();
         this.form.get('addDate').setValue(`${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`);
       }
-      if (this.phoneBookService.updateContact(this.form.value)) {
-        this.message = this.getSuccessMessage(this.user?.id);
-      }
+      this.apiService.upsetContact(this.form.value);
+      this.message = this.getSuccessMessage(this.user?.id);
 
     } else {
       this.error = 'Проверьте правильность заполнения полей';
@@ -68,7 +86,7 @@ export class FormComponent implements OnInit {
   /**
    * Navigate back to list
    */
-  back() {
+  back(): void {
     this.router.navigate(['/']);
   }
 
@@ -76,7 +94,7 @@ export class FormComponent implements OnInit {
    * Get Success Message
    * @param id number
    */
-  getSuccessMessage(id: number) {
+  getSuccessMessage(id: number): string {
     return `Контакт успешно ${!id ? 'добавлен' : 'обновлен'}`;
   }
 }

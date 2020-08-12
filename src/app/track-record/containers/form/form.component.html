@@ -1,0 +1,73 @@
+<div class="header">
+  <div class="container">
+    <a [routerLink]="['/']">Телефонная книга</a>
+  </div>
+</div>
+<div class="container">
+  <h1>Track Record</h1>
+  <p class="sub-title">Please provide the details of your recent similar deal.</p>
+
+  <div class="row">
+    <div class="form-blocks col-6">
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div formArrayName="blocks"
+             *ngFor="let block of blocks.controls; let i = index;" class="block">
+          <div class="d-flex" [formGroupName]="i">
+            <div class="bock-number">{{i + 1}}</div>
+            <div class="block-info">
+              <div class="form-group">
+                <label for="inputEmail1">Property address</label>
+                <input formControlName="email" type="email" class="form-control" id="inputEmail1"
+                       placeholder="Enter address">
+              </div>
+              <div class="row">
+                <div class="col-4 form-group">
+                  <label for="inputPurchaseDate">Purchase date</label>
+                  <div class="input-icon"><img src="assets/images/calendar.svg"></div>
+                  <input formControlName="purchaseDate" type="text" class="form-control" id="inputPurchaseDate"
+                         placeholder="Date">
+                </div>
+                <div class="col-4 form-group">
+                  <label for="inputPurchasePrice">Purchase price</label>
+                  <input formControlName="purchasePrice" type="text" class="form-control" id="inputPurchasePrice"
+                         placeholder="Price">
+                </div>
+                <div class="col-4 form-group">
+                  <label for="inputRehabBudget">Rehab budget used</label>
+                  <input formControlName="rehabBudget" type="text" class="form-control" id="inputRehabBudget"
+                         placeholder="Rehab budget">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4 form-group">
+                  <label for="inputSaleDate">Sale date</label>
+                  <div class="input-icon"><img src="assets/images/calendar.svg"></div>
+                  <input formControlName="saleDate" type="text" class="form-control" id="inputSaleDate"
+                         placeholder="Sale date">
+                </div>
+                <div class="col-4 form-group">
+                  <label for="inputSalePrice">Sale price</label>
+                  <input formControlName="salePrice" type="text" class="form-control" id="inputSalePrice"
+                         placeholder="Sale price">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="buttons">
+          <div class="add-new">
+            <div (click)="addNewBlock()">
+              <img src="assets/images/plus.svg">
+              Add Deal
+            </div>
+          </div>
+          <div>
+            <button type="submit" [disabled]="form.invalid" class="btn btn-primary">
+              Next <img src="assets/images/arrow.svg">
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

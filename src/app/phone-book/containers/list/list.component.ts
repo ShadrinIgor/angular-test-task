@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { PhoneBookService, User } from '../../../services/phone-book.service';
+import { ApiService, User } from '../../../services/api.service';
 
 @Component({
   selector: 'app-list',
@@ -15,57 +15,81 @@ export class ListComponent implements OnInit, OnDestroy {
 
   searchControl: FormControl;
   selectedUsersControl: FormControl;
-  users: User[] = [];
+  contacts: User[];
+  contacts$: Observable<User[]>;
   debounce = 400;
   subs = new Subscription();
   deletedContactId: number;
+  query = '';
+  onlySelected = false;
 
-  truckUser = (index: number, item: any) => item.id;
+  truckUser = (index: number, item: any) => item?.id;
 
   constructor(private cd: ChangeDetectorRef,
               private router: Router,
-              private phoneBookService: PhoneBookService) {
+              private apiService: ApiService) {
   }
 
   ngOnInit(): void {
-    this.users = [...this.phoneBookService.getListContacts()];
+    this.contacts$ = this.apiService.getContacts();
+
+    const sub = this.contacts$
+      .subscribe((contacts: User[]) => {
+        this.contacts = contacts;
+        this.cd.markForCheck();
+      });
+
+    this.subs.add(sub);
+
     this.searchControl = new FormControl('');
     this.selectedUsersControl = new FormControl('');
+    this.handleSearchChange();
+    this.handleSelectedOnlyChange();
+
+    this.loadContacts();
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
+  /**
+   * Handle Selected Only Change
+   */
+  handleSelectedOnlyChange(): void {
+    const sub = this.selectedUsersControl.valueChanges
+      .pipe(
+        distinctUntilChanged()
+      )
+      .subscribe((status: boolean) => {
+        this.onlySelected = status;
+        this.loadContacts();
+      });
+
+    this.subs.add(sub);
+  }
+
+  /**
+   * Handle Search Change
+   */
+  handleSearchChange(): void {
     const sub = this.searchControl.valueChanges
       .pipe(
         debounceTime(this.debounce),
         distinctUntilChanged()
       )
-      .subscribe(query => {
-        this.filterUsers(query);
+      .subscribe((query: string) => {
+        this.query = query;
+        this.loadContacts();
       });
     this.subs.add(sub);
-
-    const sub2 = this.selectedUsersControl.valueChanges
-      .pipe(
-        distinctUntilChanged()
-      )
-      .subscribe(query => {
-        console.log('query', query);
-        // this.filterUsers(query);
-      });
-
-    this.subs.add(sub2);
-  }
-
-  ngOnDestroy() {
-    this.subs.unsubscribe();
   }
 
   /**
-   * Filter Users
-   * @param query query
+   * Load Contacts
    */
-  filterUsers(query: string) {
-    const newList = this.phoneBookService.getListContacts()
-      .filter(item => item.fio.indexOf(query) !== -1 || item.phone.indexOf(query) !== -1);
-
-    this.users = [...newList];
+  loadContacts(): void {
+    this.apiService.loadContacts({ query: this.query, onlySelected: this.onlySelected });
     this.cd.markForCheck();
   }
 
@@ -73,7 +97,7 @@ export class ListComponent implements OnInit, OnDestroy {
    * Edit contact
    * @param id number
    */
-  goToForm(id?: number) {
+  goToForm(id?: number): void {
     this.router.navigate(['/form', id ? id : '']);
   }
 
@@ -81,14 +105,15 @@ export class ListComponent implements OnInit, OnDestroy {
    * Show Delete Modal
    * @param id number
    */
-  showDeleteModal(id: number) {
+  showDeleteModal(id: number): void {
     this.deletedContactId = id;
   }
 
   /**
    * Delete contact
    */
-  delete() {
-    console.log('delete', this.deletedContactId);
+  delete(): void {
+    this.apiService.deleteContact(this.deletedContactId);
+    this.loadContacts();
   }
 }

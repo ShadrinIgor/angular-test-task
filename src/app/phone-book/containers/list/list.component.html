@@ -1,8 +1,10 @@
-<div>
-  <h1>Phone book</h1>
+<div class="container">
+  <app-menu></app-menu>
+
+  <h1>Телефонная книга</h1>
 
   <div class="form-group">
-    <input type="text" [formControl]="searchControl" class="form-control" placeholder="Search">
+    <input type="text" [formControl]="searchControl" class="form-control" placeholder="Поиск">
   </div>
 
   <div class="row">
@@ -30,44 +32,48 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let user of users; trackBy: truckUser" [ngClass]="{'bg-info text-white': user.selected}">
-      <td>{{user.fio}}</td>
-      <td>{{user.phone}}</td>
-      <td>{{user.addDate}}</td>
-      <td>{{user.comment}}</td>
-      <td class="text-right">
-        <button type="button" class="btn btn-success btn-sm mr-1" (click)="goToForm(user.id)">Ред.</button>
-        <button
-          type="button"
-          class="btn btn-danger btn-sm"
-          data-toggle="modal"
-          data-target="#exampleModalCenter"
-          (click)="showDeleteModal(user.id)"
-        >Удалить</button>
-      </td>
-    </tr>
-    <tr *ngIf="!users.length">
-      <td colspan="4" class="text-center">Список пуст</td>
-    </tr>
+
+      <tr *ngFor="let user of contacts; trackBy: truckUser" [ngClass]="{'bg-info text-white': user.selected}">
+        <td>{{user.fio}}</td>
+        <td>{{user.phone}}</td>
+        <td>{{user.addDate | date}}</td>
+        <td>{{user.comment}}</td>
+        <td class="text-right">
+          <button type="button" class="btn btn-success btn-sm mr-1" (click)="goToForm(user.id)">Ред.</button>
+          <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            data-toggle="modal"
+            data-target="#exampleModalCenter"
+            (click)="showDeleteModal(user.id)"
+          >Удалить
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="!contacts.length">
+        <td colspan="4" class="text-center">Список пуст</td>
+      </tr>
+
     </tbody>
   </table>
 
   <!-- Modal -->
-  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+       aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+          <h5 class="modal-title" id="exampleModalLongTitle">Удаление</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          ...
+          Удалить контакт?
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-          <button type="button" class="btn btn-danger" (click)="delete()">Удалить</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="delete()">Удалить</button>
         </div>
       </div>
     </div>

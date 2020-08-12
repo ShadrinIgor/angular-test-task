@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Route, RouterModule } from '@angular/router';
 import { ListComponent } from './containers/list/list.component';
 import { FormComponent } from './containers/form/form.component';
-import { PhoneBookService } from '../services/phone-book.service';
 
 const routing: Route[] = [
   { path: '', component: ListComponent },
@@ -17,7 +16,6 @@ const routing: Route[] = [
   exports: [
     RouterModule
   ],
-  providers: [PhoneBookService]
 })
 export class PhoneBookRoutingModule {
 }
