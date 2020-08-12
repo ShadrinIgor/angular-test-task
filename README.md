@@ -1,27 +1,19 @@
-# AppTest
+Тестовое задание
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.3.
+Создать приложение, состоящие из 2 страниц, организовать переходы, использовать ленивую загрузку модулей:
 
-## Development server
+1. Страница “Телефонная книга”
+Использовать json-server, для имитации БД. Заполнить ее данными в формате:
+ФИО
+Номер телефона
+Дата добавления
+Комментарий
+Избранный контакт (да или нет)
+Реализовать сервис прослойку (api) для взаимодействия с БД (использовать rxjs или async/await). Вывести данные на странице в виде таблицы. Реализовать методы удаления, добавления, редактирование, фильтрации контактов в таблице по свойству “избранный”. 
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+2. Страница “Track Record”.
+Реализовать работу с формами, их обработку, валидацию (все поля должны быть обязательными для заполнения). Возможность добавлять дополнительные поля. Вывести результат в консоль в виде объекта. Шаблон формы: Figma
 
-## Code scaffolding
+Для верстки использовать bootstrap 4. Результат залить на git.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
